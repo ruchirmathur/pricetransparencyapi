@@ -1,1 +1,4 @@
-
+hospital_name,last_updated_on,version,hospital_location,financial_aid_policy,license_number | state
+hospital,01/01/2023,1000,,12121212212|CA
+description,code|1,code |1| CPT,billing_class,setting,drug_unit_of_measurement,drug_type_of_measurement,modifiers,standard_charge|gross,standard_charge|discounted_cash,standard_charge|[payer1]|[plan1],standard_charge| [payer1] | [plan1] | percent,standard_charge | min,standard_charge | max,standard_charge |[ payer1] | [plan1] | contracting_method,additional_payer_notes | [payer1] | [plan1]
+Diabetes,646464,CPT,Facility,inpatient,22,GR,Test,222,1133,1212,2233,2222,21212,2222,21212,Test,Test
