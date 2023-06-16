@@ -236,6 +236,8 @@ public class Util {
 			FileWriter file = new FileWriter(jsonFilePath);
 			file.write(json);
 			file.close();
+			
+			
 
 			createJSONFile(folderName, hospitalName, sasToken, jsonFilePath, fileSasToken);
 
@@ -263,7 +265,7 @@ public class Util {
 
 			DataLakeFileClient fileClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-					.fileSystemName(folder).pathName(String.valueOf(csvpath.getFileName())).buildFileClient();
+					.fileSystemName(folder).pathName("//"+String.valueOf(csvpath.getFileName())).buildFileClient();
 
 			fileClient.uploadFromFile(csvFilePath, true);
 		} catch (Exception ex) {
@@ -290,7 +292,7 @@ public class Util {
 
 			DataLakeFileClient filejsonClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-					.fileSystemName(folder).pathName(String.valueOf(jsonFile.getFileName())).buildFileClient();
+					.fileSystemName(folder).pathName("//"+String.valueOf(jsonFile.getFileName())).buildFileClient();
 
 			filejsonClient.uploadFromFile(jsonFilePath, true);
 		} catch (Exception ex) {
@@ -302,49 +304,64 @@ public class Util {
 
 	static public String createFileSASToken(String folder) {
 
-		String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
+		String sas = null;
 
-		StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
-				"TAcZ/9PGlngM+YEYdyXF+mkw14/f+Is3i0M9BGJZzc7i5qx35rFz/tCBvKAnp7zYL8TI3kVyd5/o+AStDDOShw==");
+		try {
+			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
-		DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
-				.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
+			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
+					"TAcZ/9PGlngM+YEYdyXF+mkw14/f+Is3i0M9BGJZzc7i5qx35rFz/tCBvKAnp7zYL8TI3kVyd5/o+AStDDOShw==");
 
-		DataLakeFileSystemClient fileSystemClient = dataLakeServiceClient.getFileSystemClient(folder);
+			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
+					.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
 
-		OffsetDateTime expiryTime = OffsetDateTime.now().plusDays(1);
+			DataLakeFileSystemClient fileSystemClient = dataLakeServiceClient.getFileSystemClient(folder);
 
-		FileSystemSasPermission permission = new FileSystemSasPermission().setWritePermission(true)
-				.setCreatePermission(true).setReadPermission(true);
+			OffsetDateTime expiryTime = OffsetDateTime.now().plusDays(1);
 
-		DataLakeServiceSasSignatureValues values = new DataLakeServiceSasSignatureValues(expiryTime, permission)
-				.setStartTime(OffsetDateTime.now());
+			FileSystemSasPermission permission = new FileSystemSasPermission().setWritePermission(true)
+					.setCreatePermission(true).setReadPermission(true);
 
-		String sas = fileSystemClient.generateSas(values);
+			DataLakeServiceSasSignatureValues values = new DataLakeServiceSasSignatureValues(expiryTime, permission)
+					.setStartTime(OffsetDateTime.now());
+
+			sas = fileSystemClient.generateSas(values);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
 		return sas;
 	}
 
 	static public String createSASToken(String folder) {
 
-		String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
+		String sas = null;
 
-		StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
-				"TAcZ/9PGlngM+YEYdyXF+mkw14/f+Is3i0M9BGJZzc7i5qx35rFz/tCBvKAnp7zYL8TI3kVyd5/o+AStDDOShw==");
+		try {
 
-		DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
-				.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
+			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
-		AccountSasPermission permissions = new AccountSasPermission().setWritePermission(true).setReadPermission(true)
-				.setCreatePermission(true);
-		AccountSasResourceType resourceTypes = new AccountSasResourceType().setContainer(true);
-		AccountSasService services = new AccountSasService().setBlobAccess(true).setFileAccess(true);
-		OffsetDateTime expiryTime = OffsetDateTime.now().plus(Duration.ofDays(2));
+			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
+					"TAcZ/9PGlngM+YEYdyXF+mkw14/f+Is3i0M9BGJZzc7i5qx35rFz/tCBvKAnp7zYL8TI3kVyd5/o+AStDDOShw==");
 
-		AccountSasSignatureValues sasValues = new AccountSasSignatureValues(expiryTime, permissions, services,
-				resourceTypes);
+			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
+					.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
 
-		String sas = dataLakeServiceClient.generateAccountSas(sasValues);
+			AccountSasPermission permissions = new AccountSasPermission().setWritePermission(true)
+					.setReadPermission(true).setCreatePermission(true);
+			AccountSasResourceType resourceTypes = new AccountSasResourceType().setContainer(true);
+			AccountSasService services = new AccountSasService().setBlobAccess(true).setFileAccess(true);
+			OffsetDateTime expiryTime = OffsetDateTime.now().plus(Duration.ofDays(2));
+
+			AccountSasSignatureValues sasValues = new AccountSasSignatureValues(expiryTime, permissions, services,
+					resourceTypes);
+
+			sas = dataLakeServiceClient.generateAccountSas(sasValues);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
 		return sas;
 	}
 }
