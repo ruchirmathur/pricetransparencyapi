@@ -306,6 +306,7 @@ public class Util {
 		String sas = null;
 
 		try {
+			System.out.println("test:::"+System.getenv("storagekey"));
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
 			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
@@ -337,6 +338,7 @@ public class Util {
 		String sas = null;
 
 		try {
+			System.out.println("test:::"+System.getenv("storagekey"));
 
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
