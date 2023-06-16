@@ -15,7 +15,6 @@ import org.apache.commons.csv.CSVPrinter;
 
 import com.app.model.Address;
 import com.app.model.Location;
-import org.springframework.beans.factory.annotation.Value;
 import com.app.model.PriceTransparencyListRequest;
 import com.app.model.PriceTransparencyRequest;
 import com.app.model.PriceTransparencyRequest.AdmissionType;
@@ -46,10 +45,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Util {
-	
-	@Value("${storage.key}")
-	public static String storageKey;
-	 
+
 	public static void main(String args[]) throws IOException, InterruptedException {
 
 		PriceTransparencyListRequest priceTransparencyListRequest = new PriceTransparencyListRequest();
@@ -263,6 +259,7 @@ public class Util {
 
 			fileSystemClient.createIfNotExists();
 
+			System.out.println("test::::" + csvFilePath);
 
 			Path csvpath = Paths.get(csvFilePath);
 
@@ -292,7 +289,7 @@ public class Util {
 			fileSystemClient.createIfNotExists();
 
 			Path jsonFile = Paths.get(jsonFilePath);
-			
+
 			DataLakeFileClient filejsonClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
 					.fileSystemName(folder).pathName("/home/site/wwwroot/"+String.valueOf(jsonFile.getFileName())).buildFileClient();
@@ -310,11 +307,11 @@ public class Util {
 		String sas = null;
 
 		try {
-			System.out.println("test:::"+storageKey);
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
 			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
 					"TAcZ/9PGlngM+YEYdyXF+mkw14/f+Is3i0M9BGJZzc7i5qx35rFz/tCBvKAnp7zYL8TI3kVyd5/o+AStDDOShw==");
+
 			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
 					.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
 
@@ -342,7 +339,6 @@ public class Util {
 		String sas = null;
 
 		try {
-			System.out.println("test:::"+storageKey);
 
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
