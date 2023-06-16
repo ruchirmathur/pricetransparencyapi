@@ -165,7 +165,7 @@ public class Util {
 
 		String sasCSVFileToken = createFileSASToken(priceTransparencyRequest.getHospitalName() + "csv");
 
-		createCSV(priceTransparencyListRequest, sasCSVToken, sasCSVFileToken);
+		//createCSV(priceTransparencyListRequest, sasCSVToken, sasCSVFileToken);
 
 		createJSON(priceTransparencyListRequest, sasJsonToken, sasJsonFileToken);
 
@@ -233,7 +233,7 @@ public class Util {
 
 			String jsonFilePath = priceTransparencyListRequest.getHospitalName() + ".json";
 
-			FileWriter file = new FileWriter(jsonFilePath);
+			FileWriter file = new FileWriter("/home/site/wwwroot/"+jsonFilePath);
 			file.write(json);
 			file.close();
 			
@@ -265,7 +265,7 @@ public class Util {
 
 			DataLakeFileClient fileClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-					.fileSystemName(folder).pathName("/home/site/wwwroot/"+String.valueOf(csvpath.getFileName())).buildFileClient();
+					.fileSystemName(folder).pathName(String.valueOf(csvpath.getFileName())).buildFileClient();
 
 			fileClient.uploadFromFile(csvFilePath, true);
 		} catch (Exception ex) {
@@ -292,7 +292,7 @@ public class Util {
 
 			DataLakeFileClient filejsonClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-					.fileSystemName(folder).pathName("/home/site/wwwroot/"+String.valueOf(jsonFile.getFileName())).buildFileClient();
+					.fileSystemName(folder).pathName(String.valueOf(jsonFile.getFileName())).buildFileClient();
 
 			filejsonClient.uploadFromFile(jsonFilePath, true);
 		} catch (Exception ex) {
