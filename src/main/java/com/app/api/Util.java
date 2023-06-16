@@ -157,25 +157,24 @@ public class Util {
 
 		priceTransparencyListRequest.setValue(priceTransparencyRequestList);
 
+		String sasJsonToken = createSASToken(priceTransparencyRequest.getHospitalName() + "json");
 
-		String sasJsonToken = createSASToken(priceTransparencyRequest.getHospitalName()+"json");
-		
-		String sasJsonFileToken = createFileSASToken(priceTransparencyRequest.getHospitalName()+"json");
+		String sasJsonFileToken = createFileSASToken(priceTransparencyRequest.getHospitalName() + "json");
 
-		String sasCSVToken = createSASToken(priceTransparencyRequest.getHospitalName()+"csv");
-		
-		String sasCSVFileToken = createFileSASToken(priceTransparencyRequest.getHospitalName()+"csv");
+		String sasCSVToken = createSASToken(priceTransparencyRequest.getHospitalName() + "csv");
 
-		createCSV(priceTransparencyListRequest,sasCSVToken,sasCSVFileToken);
+		String sasCSVFileToken = createFileSASToken(priceTransparencyRequest.getHospitalName() + "csv");
 
-		createJSON(priceTransparencyListRequest,sasJsonToken,sasJsonFileToken);
+		createCSV(priceTransparencyListRequest, sasCSVToken, sasCSVFileToken);
+
+		createJSON(priceTransparencyListRequest, sasJsonToken, sasJsonFileToken);
 
 	}
 
 	public static void createCSV(PriceTransparencyListRequest priceTransparencyListRequest, String sasToken,
 			String fileSasToken) throws IOException {
 
-		CSVPrinter printer = new CSVPrinter(new FileWriter(priceTransparencyListRequest.getHospitalName()+ ".csv"),
+		CSVPrinter printer = new CSVPrinter(new FileWriter(priceTransparencyListRequest.getHospitalName() + ".csv"),
 				CSVFormat.DEFAULT);
 
 		printer.printRecord("hospital_name", "last_updated_on", "version", "hospital_location", "financial_aid_policy",
@@ -213,28 +212,26 @@ public class Util {
 
 		printer.flush();
 		printer.close();
-		String csvFilepath = priceTransparencyListRequest.getHospitalName() +".csv";
+		String csvFilepath = priceTransparencyListRequest.getHospitalName() + ".csv";
 		String hospitalName = priceTransparencyListRequest.getHospitalName();
-		String folderName = priceTransparencyListRequest.getHospitalName()+"csv";
+		String folderName = priceTransparencyListRequest.getHospitalName() + "csv";
 
-
-
-	    createCSVFile(folderName, hospitalName, sasToken, csvFilepath, fileSasToken);
-
+		createCSVFile(folderName, hospitalName, sasToken, csvFilepath, fileSasToken);
 
 	}
+
 	public static void createJSON(PriceTransparencyListRequest priceTransparencyListRequest, String sasToken,
 			String fileSasToken) throws IOException {
-		
+
 		String hospitalName = priceTransparencyListRequest.getHospitalName();
-		String folderName = priceTransparencyListRequest.getHospitalName()+"json";
+		String folderName = priceTransparencyListRequest.getHospitalName() + "json";
 
 		ObjectMapper mapper = new ObjectMapper();
 
 		try {
 			String json = mapper.writeValueAsString(priceTransparencyListRequest);
 
-			String jsonFilePath = priceTransparencyListRequest.getHospitalName() +".json";
+			String jsonFilePath = priceTransparencyListRequest.getHospitalName() + ".json";
 
 			FileWriter file = new FileWriter(jsonFilePath);
 			file.write(json);
@@ -246,27 +243,32 @@ public class Util {
 			e.printStackTrace();
 		}
 	}
+
 	static public DataLakeServiceClient createCSVFile(String folder, String hospital, String sasToken,
 			String csvFilePath, String fileSasToken) {
 
-		String endpoint = "https://hospitalpricedata.dfs.core.windows.net/";
+		try {
+			String endpoint = "https://hospitalpricedata.dfs.core.windows.net/";
 
-		DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder().endpoint(endpoint)
-				.sasToken(sasToken).buildClient();
+			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder().endpoint(endpoint)
+					.sasToken(sasToken).buildClient();
 
-		DataLakeFileSystemClient fileSystemClient = dataLakeServiceClient.getFileSystemClient(folder);
+			DataLakeFileSystemClient fileSystemClient = dataLakeServiceClient.getFileSystemClient(folder);
 
-		fileSystemClient.createIfNotExists();
+			fileSystemClient.createIfNotExists();
 
-		System.out.println("test::::"+csvFilePath);
-		
-		Path csvpath = Paths.get(csvFilePath);
+			System.out.println("test::::" + csvFilePath);
 
-		DataLakeFileClient fileClient = new DataLakePathClientBuilder()
-				.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-				.fileSystemName(folder).pathName(String.valueOf(csvpath.toAbsolutePath())).buildFileClient();
+			Path csvpath = Paths.get(csvFilePath);
 
-		fileClient.uploadFromFile(csvFilePath, true);
+			DataLakeFileClient fileClient = new DataLakePathClientBuilder()
+					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
+					.fileSystemName(folder).pathName(String.valueOf(csvpath.getFileName())).buildFileClient();
+
+			fileClient.uploadFromFile(csvFilePath, true);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
 		return null;
 	}
@@ -274,23 +276,26 @@ public class Util {
 	static public DataLakeServiceClient createJSONFile(String folder, String hospital, String sasToken,
 			String jsonFilePath, String fileSasToken) {
 
-		String endpoint = "https://hospitalpricedata.dfs.core.windows.net/";
+		try {
+			String endpoint = "https://hospitalpricedata.dfs.core.windows.net/";
 
-		DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder().endpoint(endpoint)
-				.sasToken(sasToken).buildClient();
+			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder().endpoint(endpoint)
+					.sasToken(sasToken).buildClient();
 
-		DataLakeFileSystemClient fileSystemClient = dataLakeServiceClient.getFileSystemClient(folder);
+			DataLakeFileSystemClient fileSystemClient = dataLakeServiceClient.getFileSystemClient(folder);
 
-		fileSystemClient.createIfNotExists();
+			fileSystemClient.createIfNotExists();
 
+			Path jsonFile = Paths.get(jsonFilePath);
 
-		Path jsonFile = Paths.get(jsonFilePath);
+			DataLakeFileClient filejsonClient = new DataLakePathClientBuilder()
+					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
+					.fileSystemName(folder).pathName(String.valueOf(jsonFile.getFileName())).buildFileClient();
 
-		DataLakeFileClient filejsonClient = new DataLakePathClientBuilder()
-				.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-				.fileSystemName(folder).pathName(String.valueOf(jsonFile.toAbsolutePath())).buildFileClient();
-
-		filejsonClient.uploadFromFile(jsonFilePath, true);
+			filejsonClient.uploadFromFile(jsonFilePath, true);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
 		return null;
 	}
@@ -316,7 +321,7 @@ public class Util {
 				.setStartTime(OffsetDateTime.now());
 
 		String sas = fileSystemClient.generateSas(values);
-		
+
 		return sas;
 	}
 
