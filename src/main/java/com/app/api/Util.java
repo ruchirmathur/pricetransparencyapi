@@ -265,7 +265,7 @@ public class Util {
 
 			DataLakeFileClient fileClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-					.fileSystemName(folder).pathName("//"+String.valueOf(csvpath.getFileName())).buildFileClient();
+					.fileSystemName(folder).pathName("/home/site/wwwroot/"+String.valueOf(csvpath.getFileName())).buildFileClient();
 
 			fileClient.uploadFromFile(csvFilePath, true);
 		} catch (Exception ex) {
@@ -292,7 +292,7 @@ public class Util {
 
 			DataLakeFileClient filejsonClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
-					.fileSystemName(folder).pathName("//"+String.valueOf(jsonFile.getFileName())).buildFileClient();
+					.fileSystemName(folder).pathName("/home/site/wwwroot/"+String.valueOf(jsonFile.getFileName())).buildFileClient();
 
 			filejsonClient.uploadFromFile(jsonFilePath, true);
 		} catch (Exception ex) {
