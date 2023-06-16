@@ -165,7 +165,7 @@ public class Util {
 
 		String sasCSVFileToken = createFileSASToken(priceTransparencyRequest.getHospitalName() + "csv");
 
-		//createCSV(priceTransparencyListRequest, sasCSVToken, sasCSVFileToken);
+		createCSV(priceTransparencyListRequest, sasCSVToken, sasCSVFileToken);
 
 		createJSON(priceTransparencyListRequest, sasJsonToken, sasJsonFileToken);
 
@@ -259,7 +259,6 @@ public class Util {
 
 			fileSystemClient.createIfNotExists();
 
-			System.out.println("test::::" + csvFilePath);
 
 			Path csvpath = Paths.get(csvFilePath);
 
@@ -289,7 +288,7 @@ public class Util {
 			fileSystemClient.createIfNotExists();
 
 			Path jsonFile = Paths.get(jsonFilePath);
-
+			
 			DataLakeFileClient filejsonClient = new DataLakePathClientBuilder()
 					.endpoint("https://hospitalpricedata.dfs.core.windows.net/").sasToken(fileSasToken)
 					.fileSystemName(folder).pathName("/home/site/wwwroot/"+String.valueOf(jsonFile.getFileName())).buildFileClient();
@@ -310,8 +309,7 @@ public class Util {
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
 			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
-					"TAcZ/9PGlngM+YEYdyXF+mkw14/f+Is3i0M9BGJZzc7i5qx35rFz/tCBvKAnp7zYL8TI3kVyd5/o+AStDDOShw==");
-
+					System.getenv("storagekey"));
 			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
 					.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
 
@@ -343,7 +341,7 @@ public class Util {
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
 			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
-					"TAcZ/9PGlngM+YEYdyXF+mkw14/f+Is3i0M9BGJZzc7i5qx35rFz/tCBvKAnp7zYL8TI3kVyd5/o+AStDDOShw==");
+					System.getenv("storagekey"));
 
 			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
 					.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
