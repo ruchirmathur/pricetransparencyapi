@@ -15,6 +15,7 @@ import org.apache.commons.csv.CSVPrinter;
 
 import com.app.model.Address;
 import com.app.model.Location;
+import org.springframework.beans.factory.annotation.Value;
 import com.app.model.PriceTransparencyListRequest;
 import com.app.model.PriceTransparencyRequest;
 import com.app.model.PriceTransparencyRequest.AdmissionType;
@@ -45,7 +46,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Util {
-
+	
+	@Value("${storage.key}")
+	public static String storageKey;
+	 
 	public static void main(String args[]) throws IOException, InterruptedException {
 
 		PriceTransparencyListRequest priceTransparencyListRequest = new PriceTransparencyListRequest();
@@ -306,7 +310,7 @@ public class Util {
 		String sas = null;
 
 		try {
-			System.out.println("test:::"+System.getenv("storagekey"));
+			System.out.println("test:::"+storageKey);
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
 			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
