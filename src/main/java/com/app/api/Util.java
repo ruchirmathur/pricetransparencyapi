@@ -314,7 +314,7 @@ public class Util {
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
 			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
-					System.getenv("storagekey"));
+					storageKey);
 			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
 					.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
 
@@ -342,12 +342,12 @@ public class Util {
 		String sas = null;
 
 		try {
-			System.out.println("test:::"+System.getenv("storagekey"));
+			System.out.println("test:::"+storageKey);
 
 			String endpoint = "https://hospitalpricedata.blob.core.windows.net/";
 
 			StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential("hospitalpricedata",
-					System.getenv("storagekey"));
+					storageKey);
 
 			DataLakeServiceClient dataLakeServiceClient = new DataLakeServiceClientBuilder()
 					.credential(storageSharedKeyCredential).endpoint(endpoint).buildClient();
